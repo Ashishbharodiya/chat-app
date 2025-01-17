@@ -1,3 +1,4 @@
+
 import { useRef, useState } from "react";
 import { useChatStore } from "../store/useChatStore";
 import { Image, Send, X } from "lucide-react";
@@ -48,7 +49,7 @@ const MessageInput = () => {
   };
 
   return (
-    <div className="p-4 w-full h-full ">
+    <div className="p-4 w-full">
       {imagePreview && (
         <div className="mb-3 flex items-center gap-2">
           <div className="relative">

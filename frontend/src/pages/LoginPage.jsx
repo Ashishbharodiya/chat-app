@@ -18,12 +18,10 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="h-screen grid lg:grid-cols-2 ">
-      {/* Left Side - Form */}
+    <div className="h-full w-full pb-3 grid lg:grid-cols-2">
       <div className="flex flex-col justify-center items-center p-6 sm:p-12">
-        <div className="w-full max-w-md space-y-3">
-          {/* Logo */}
-          <div className="text-center mb-5">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center mb-8">
             <div className="flex flex-col items-center gap-2 group">
               <div
                 className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20
@@ -36,7 +34,6 @@ const LoginPage = () => {
             </div>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="form-control">
               <label className="label">
@@ -108,7 +105,6 @@ const LoginPage = () => {
         </div>
       </div>
 
-      {/* Right Side - Image/Pattern */}
       <AuthImagePattern
         title={"Welcome back!"}
         subtitle={"Sign in to continue your conversations and catch up with your messages."}
