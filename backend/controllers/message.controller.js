@@ -41,10 +41,20 @@ export const sendMessage = async (req, res) => {
     const { id: receiverId } = req.params;
     const senderId = req.user._id;
 
-    let imageUrl;
+    if (!receiverId || !senderId) {
+      return res.status(400).json({ error: "Receiver ID and Sender ID are required" });
+    }
+
+    let imageUrl = null;
+
     if (image) {
-      const uploadResponse = await cloudinary.uploader.upload(image);
-      imageUrl = uploadResponse.secure_url;
+      try {
+        const uploadResponse = await cloudinary.uploader.upload(image);
+        imageUrl = uploadResponse.secure_url;
+      } catch (uploadError) {
+        console.log("Error uploading image to Cloudinary:", uploadError.message);
+        return res.status(500).json({ error: "Failed to upload image to Cloudinary" });
+      }
     }
 
     const newMessage = new Message({
@@ -54,16 +64,29 @@ export const sendMessage = async (req, res) => {
       image: imageUrl,
     });
 
-    await newMessage.save();
+    try {
+      await newMessage.save();
+    } catch (dbError) {
+      console.log("Error saving message to the database:", dbError.message);
+      return res.status(500).json({ error: "Failed to save message to the database" });
+    }
 
-    const receiverSocketId = getReceiverSocketId(receiverId);
-    if (receiverSocketId) {
-      io.to(receiverSocketId).emit("newMessage", newMessage);
+    try {
+      const receiverSocketId = getReceiverSocketId(receiverId);
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit("newMessage", newMessage);
+      } else {
+        console.log(`Receiver with ID ${receiverId} is not connected`);
+      }
+    } catch (socketError) {
+      console.log("Error sending message to receiver's socket:", socketError.message);
     }
 
     res.status(201).json(newMessage);
+
   } catch (error) {
-    console.log("Error in sendMessage controller: ", error.message);
+    console.log("Unexpected error in sendMessage controller:", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
