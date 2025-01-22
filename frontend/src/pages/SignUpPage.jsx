@@ -31,11 +31,7 @@ const SignUpPage = () => {
 
     const success = validateForm();
 
-     if (success === true) {
-      await signup(formData);
-
-      navigate("/login");
-    }
+    if (success === true) signup(formData);
   };
 
   return (
