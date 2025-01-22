@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare, User } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import AuthImagePattern from "../components/AuthImagePattern";
 import toast from "react-hot-toast";
@@ -15,50 +15,27 @@ const SignUpPage = () => {
   });
 
   const { signup, isSigningUp } = useAuthStore();
-  const navigate = useNavigate();
 
   const validateForm = () => {
-    if (!formData.fullName.trim()) {
-      toast.error("Full name is required");
-      return false;
-    }
-    if (!formData.email.trim()) {
-      toast.error("Email is required");
-      return false;
-    }
-    if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      toast.error("Invalid email format");
-      return false;
-    }
-    if (!formData.password) {
-      toast.error("Password is required");
-      return false;
-    }
-    if (formData.password.length < 6) {
-      toast.error("Password must be at least 6 characters");
-      return false;
-    }
+    if (!formData.fullName.trim()) return toast.error("Full name is required");
+    if (!formData.email.trim()) return toast.error("Email is required");
+    if (!/\S+@\S+\.\S+/.test(formData.email)) return toast.error("Invalid email format");
+    if (!formData.password) return toast.error("Password is required");
+    if (formData.password.length < 6) return toast.error("Password must be at least 6 characters");
 
     return true;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     const success = validateForm();
 
-    if (success) {
+     if (success === true) {
       await signup(formData);
+
       navigate("/login");
     }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
   };
 
   return (
@@ -89,11 +66,10 @@ const SignUpPage = () => {
                 </div>
                 <input
                   type="text"
-                  name="fullName"
-                  className="input input-bordered w-full pl-10"
-                  placeholder="example"
+                  className={`input input-bordered w-full pl-10`}
+                  placeholder="John Doe"
                   value={formData.fullName}
-                  onChange={handleInputChange}
+                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                 />
               </div>
             </div>
@@ -108,11 +84,10 @@ const SignUpPage = () => {
                 </div>
                 <input
                   type="email"
-                  name="email"
-                  className="input input-bordered w-full pl-10"
+                  className={`input input-bordered w-full pl-10`}
                   placeholder="you@example.com"
                   value={formData.email}
-                  onChange={handleInputChange}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
               </div>
             </div>
@@ -127,11 +102,10 @@ const SignUpPage = () => {
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
-                  name="password"
-                  className="input input-bordered w-full pl-10"
+                  className={`input input-bordered w-full pl-10`}
                   placeholder="••••••••"
                   value={formData.password}
-                  onChange={handleInputChange}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 />
                 <button
                   type="button"
@@ -154,7 +128,7 @@ const SignUpPage = () => {
                   Loading...
                 </>
               ) : (
-                <a href="/login">  Create Account </a>
+                "Create Account"
               )}
             </button>
           </form>
@@ -170,6 +144,7 @@ const SignUpPage = () => {
         </div>
       </div>
 
+
       <AuthImagePattern
         title="Join our community"
         subtitle="Connect with friends, share moments, and stay in touch with your loved ones."
@@ -177,5 +152,4 @@ const SignUpPage = () => {
     </div>
   );
 };
-
 export default SignUpPage;
