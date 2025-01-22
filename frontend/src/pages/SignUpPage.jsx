@@ -124,7 +124,7 @@ const SignUpPage = () => {
                   Loading...
                 </>
               ) : (
-                "Create Account"
+                <a href="/login">  Create Account </a>
               )}
             </button>
           </form>
